@@ -21,14 +21,11 @@ def statusCodeHandler(code):
 
 #work around for switch statements used to choose what the user wants to do
 def inputHandler(input):
-    #checks if the user wants to quit
-    if (input == "quit"):
-        return 0
     switch = {
         'link check': testAnchors,
-        'attribute check': testAttributes
+        'element check': testElements
     }
-    return (switch.get(input))
+    return (switch.get(input) if (input != "quit") else 0)
 
 #returns the anchors in the web page
 def grabElements(url,element):
@@ -66,17 +63,20 @@ def testAnchors(url):
     else: print("No anchor tags found!") #no anchor tags found on the page
     print("Link Check Complete!")
 
-def testAttributes(url):
+def testElements(url):
     print("What element do you wanna test") 
     element = input().lower().replace("<","").replace(">","")
     elements = grabElements(url,element)
     if (elements != None):
-        print("What attribute do you wanna check for?")
-        attribute = input()
+        print("What attribute do you wanna check for? (enter none to just search for elements)")
+        attribute = input().lower()
         for element in elements:
             if (element != None):
-                print("Attribute found for " + str(element) if (element.get(attribute) != None) else 
-                "No " + attribute + " found for " + str(element))
+                if (attribute == "none"):
+                    print("Element found " + str(element))
+                else:
+                    print("Attribute found for " + str(element) if (element.get(attribute) != None) else 
+                          "No " + attribute + " found for " + str(element))
     else:
         print("No elements of type " + element + " found")
         
@@ -105,7 +105,7 @@ def main():
                     print("Invalid URL, try adding http:// to the beginning of the URL, or maybe you're offline!")
                     continue
                 print("Now, what can I do for you?" )
-                print("Possible commands: \n link check - checks all the anchor tags for valid urls\n attribute check - searchs page for an element and checks if an attribute is present \n quit - quits the application" )
+                print("Possible commands: \n link check - checks all the anchor tags for valid urls\n element check - searchs page for an element, and can check if an attribute is present \n quit - quits the application" )
 
                 job = inputHandler(input().lower())
                 
