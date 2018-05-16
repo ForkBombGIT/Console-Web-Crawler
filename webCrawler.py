@@ -4,7 +4,7 @@
 
 from bs4 import BeautifulSoup 
 import requests
-
+#pseudo switch statements
 #work around for switch statements used to return header codes
 def statusCodeHandler(code):
     switch = {
@@ -25,22 +25,23 @@ def inputHandler(input):
     if (input == "quit"):
         return 0
     switch = {
-        'link check': testAnchors
+        'link check': testAnchors,
+        'attribute check': testAttributes
     }
     return (switch.get(input))
 
 #returns the anchors in the web page
-def grabAnchors(url):
+def grabElements(url,element):
     bf = BeautifulSoup(url, 'html.parser')
     #gets all the anchor tags on the page
-    anchors = bf.find_all('a')
+    elements = bf.find_all(element)
     #returns the anchor array, or 0 if no anchor tags found
-    return anchors if (len(anchors) > 0) else None
+    return elements if (len(elements) > 0) else None
 
 #tests all the hrefs on the page
 def testAnchors(url):
     print("Beginning Link Check!")
-    anchors = grabAnchors(url)
+    anchors = grabElements(url,'a')
     #ensures there are tags to work with
     if (anchors != None):
         #iterate through tags
@@ -65,42 +66,57 @@ def testAnchors(url):
     else: print("No anchor tags found!") #no anchor tags found on the page
     print("Link Check Complete!")
 
+def testAttributes(url):
+    print("What element do you wanna test") 
+    element = input().lower()
+    elements = grabElements(url,element).replace("<","").replace(">","")
+    if (elements != None):
+        print("What attribute do you wanna check for?")
+        attribute = input()
+    else:
+        print("No elements of type " + element + " found")
+        
 #main function
 def main():
     loop = True;
     while (loop):
-        #communicates with user
-        print("Hello, I'm a Web Crawler, please input a URL")
-        #gets input
-        url = (input().lower())
-        #checks if user wants to quit
-        html = url;
-        if (url == "quit"):
-            print("See ya later!")
-            loop = False
-        else:
-            try:  
-                #gets html from page
-                html = requests.get(url)
-                #ensures that the request was successful
-                html.raise_for_status()
-            #catchs exceptions
-            except (requests.exceptions.RequestException) as e:
-                print("Invalid URL, try adding http:// to the beginning of the URL!")
-                continue
-            print("Now, what can I do for you?" )
-            print("Possible commands: \n link check - checks all the anchor tags for valid urls\n quit - quits the application" )
-            job = inputHandler(input().lower())
-            
-            #ensures a function is returned
-            if (job != None):
-                #checks if user wants to quit
-                if (job == 0): 
-                    print("Bye bye for now!")
-                    loop = False
-                #calls function returned
-                job(html.text)
-            #invalid input
+        try:
+            #communicates with user
+            print("Hello, I'm a Web Crawler, please input a URL")
+            #gets input
+            url = (input().lower())
+            #checks if user wants to quit
+            html = url;
+            if (url == "quit"):
+                print("See ya later!")
+                loop = False
             else:
-                print("Not a valid function! Try again! \n")
+                try:  
+                    #gets html from page
+                    html = requests.get(url)
+                    #ensures that the request was successful
+                    html.raise_for_status()
+                #catchs exceptions
+                except (requests.exceptions.RequestException) as e:
+                    print("Invalid URL, try adding http:// to the beginning of the URL, or maybe you're offline!")
+                    continue
+                print("Now, what can I do for you?" )
+                print("Possible commands: \n link check - checks all the anchor tags for valid urls\n quit - quits the application" )
+
+                job = inputHandler(input().lower())
+                
+    			  #ensures a function is returned
+                if (job != None):
+                    #checks if user wants to quit
+                    if (job == 0): 
+                        print("Bye bye for now!")
+                        break;
+                    #calls function returned
+                    job(html.text)
+                #invalid input
+                else:
+                    print("Not a valid function! Try again! \n")
+        except (KeyboardInterrupt) as e: 
+            print("Bye for now!")
+            break;
 main()
