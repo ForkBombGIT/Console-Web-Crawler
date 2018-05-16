@@ -47,20 +47,21 @@ def testAnchors(url):
              try:
                  link = ref.get('href').replace("http://","").replace("https://","")
              except (AttributeError):
-                 print("No href found!")
+                 print("No href found for " + str(ref) + "\n")
              #ensures that it isnt a blank href   
              if (len(link) != 0): link = "http://" + link           
              else: 
                  continue 
              try: #prints what is returned from the page
                  if (statusCodeHandler(requests.head(link).status_code) != 1):
-                     print(link + ' returns ' + str(requests.head(link).status_code) + statusCodeHandler(requests.head(link).status_code))
+                     print(link + ' returns ' + str(requests.head(link).status_code) + statusCodeHandler(requests.head(link).status_code) + "\n")
                  else: 
-                     print(link + ' returns ' + str(requests.head(link).status_code))
+                     print(link + ' returns ' + str(requests.head(link).status_code) + "\n")
              except (requests.ConnectionError, requests.exceptions.InvalidURL) as e: #unable to connect to link
-                 print("Failed to connect to " + link)
+                 print("Failed to connect to " + link + "\n")
     
     else: print("No anchor tags found!") #no anchor tags found on the page
+    print(str(len(anchors)) + " anchor tags found")
     print("Link Check Complete!")
 
 def testElements(url):
@@ -75,8 +76,9 @@ def testElements(url):
                 if (attribute == "none"):
                     print("Element found " + str(element))
                 else:
-                    print("Attribute found for " + str(element) if (element.get(attribute) != None) else 
-                          "No " + attribute + " found for " + str(element))
+                    print("Attribute found for " + str(element) + "\n" if (element.get(attribute) != None) else 
+                          "No " + attribute + " found for " + str(element) + "\n")
+        print(str(len(elements)) + " elements found")
     else:
         print("No elements of type " + element + " found")
         
