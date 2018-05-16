@@ -68,11 +68,15 @@ def testAnchors(url):
 
 def testAttributes(url):
     print("What element do you wanna test") 
-    element = input().lower()
-    elements = grabElements(url,element).replace("<","").replace(">","")
+    element = input().lower().replace("<","").replace(">","")
+    elements = grabElements(url,element)
     if (elements != None):
         print("What attribute do you wanna check for?")
         attribute = input()
+        for element in elements:
+            if (element != None):
+                print("Attribute found for " + str(element) if (element.get(attribute) != None) else 
+                "No " + attribute + " found for " + str(element))
     else:
         print("No elements of type " + element + " found")
         
@@ -101,7 +105,7 @@ def main():
                     print("Invalid URL, try adding http:// to the beginning of the URL, or maybe you're offline!")
                     continue
                 print("Now, what can I do for you?" )
-                print("Possible commands: \n link check - checks all the anchor tags for valid urls\n quit - quits the application" )
+                print("Possible commands: \n link check - checks all the anchor tags for valid urls\n attribute check - searchs page for an element and checks if an attribute is present \n quit - quits the application" )
 
                 job = inputHandler(input().lower())
                 
