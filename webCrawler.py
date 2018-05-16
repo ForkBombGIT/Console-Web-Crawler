@@ -47,7 +47,7 @@ def testAnchors(url):
         for ref in anchors:
              #gets the href element from the anchor tags
              try:
-                 link = ref.get('href').strip("http://#").strip("https://#")
+                 link = ref.get('href').strip("http://#")
              except (AttributeError):
                  print("No href found!")
              #ensures that it isnt a blank href   
