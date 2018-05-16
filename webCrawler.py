@@ -47,20 +47,19 @@ def testAnchors(url):
         for ref in anchors:
              #gets the href element from the anchor tags
              try:
-                 link = ref.get('href').strip("http://#")
+                 link = ref.get('href').replace("http://","").replace("https://","")
              except (AttributeError):
                  print("No href found!")
              #ensures that it isnt a blank href   
-             if (len(link) != 0): link = "http://" + link
+             if (len(link) != 0): link = "http://" + link           
              else: 
-                 continue
-             
+                 continue 
              try: #prints what is returned from the page
                  if (statusCodeHandler(requests.head(link).status_code) != 1):
                      print(link + ' returns ' + str(requests.head(link).status_code) + statusCodeHandler(requests.head(link).status_code))
                  else: 
                      print(link + ' returns ' + str(requests.head(link).status_code))
-             except requests.ConnectionError: #unable to connect to link
+             except (requests.ConnectionError, requests.exceptions.InvalidURL) as e: #unable to connect to link
                  print("Failed to connect to " + link)
     
     else: print("No anchor tags found!") #no anchor tags found on the page
