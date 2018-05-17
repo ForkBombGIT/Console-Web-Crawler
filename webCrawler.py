@@ -5,7 +5,7 @@
 from bs4 import BeautifulSoup 
 import requests
 import time
-logName = "/logs/" + time.strftime("%Y%m%d-%H%M%S") + ".txt"
+logName = time.strftime("%Y%m%d-%H%M%S") + ".txt"
 logFile = open(logName,"w")
 #pseudo switch statements
 #work around for switch statements used to return header codes
