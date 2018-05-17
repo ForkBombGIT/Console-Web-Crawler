@@ -54,7 +54,8 @@ def testAnchors(markup,url):
                  print("No href found for " + str(ref) + "\n")
              #ensures that it isnt a blank href  
              if (len(link) > 0):
-                 if (link[0] != "/"): link = "http://" + link 
+                 if (link[0] == "#"): continue
+                 elif (link[0] != "/"): link = "http://" + link 
                  elif (link[0] == "/"): link = "http://" + url.replace("http://","").replace("https://","") + link
                  else: continue 
              else: continue
@@ -71,7 +72,7 @@ def testAnchors(markup,url):
                  failedCounter+=1
     
     else: print("No anchor tags found!") #no anchor tags found on the page
-    print(str(len(anchors)) if (anchors != None) else "0" + " anchor tags found, " + str(brokenCounter) + " broken links found, failed to connect to " + str(failedCounter))
+    print((str(len(anchors)) if (anchors != None) else "0") + " anchor tags found, " + str(brokenCounter) + " broken links found, failed to connect to " + str(failedCounter))
     print("Link Check Complete!")
 
 def testElements(markup,url):
