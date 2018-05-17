@@ -71,7 +71,7 @@ def testAnchors(markup,url):
                  failedCounter+=1
     
     else: print("No anchor tags found!") #no anchor tags found on the page
-    print(str(len(anchors)) + " anchor tags found, " + str(brokenCounter) + " broken links found, failed to connect to " + str(failedCounter))
+    print(str(len(anchors)) if (anchors != None) else "0" + " anchor tags found, " + str(brokenCounter) + " broken links found, failed to connect to " + str(failedCounter))
     print("Link Check Complete!")
 
 def testElements(markup,url):
