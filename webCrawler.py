@@ -36,38 +36,49 @@ def grabElements(url,element):
     return elements if (len(elements) > 0) else None
 
 #tests all the hrefs on the page
-def testAnchors(url):
+def testAnchors(markup,url):
+    brokenCounter = 0
+    failedCounter = 0
     print("Beginning Link Check!")
-    anchors = grabElements(url,'a')
+    anchors = grabElements(markup,'a')
     #ensures there are tags to work with
     if (anchors != None):
         #iterate through tags
         for ref in anchors:
              #gets the href element from the anchor tags
+             link = ""
              try:
+                 #print(ref.get('href'))
                  link = ref.get('href').replace("http://","").replace("https://","")
              except (AttributeError):
                  print("No href found for " + str(ref) + "\n")
-             #ensures that it isnt a blank href   
-             if (len(link) != 0): link = "http://" + link           
-             else: 
-                 continue 
-             try: #prints what is returned from the page
+             #ensures that it isnt a blank href  
+             if (len(link) > 0):
+                 if (link[0] != "/"): link = "http://" + link 
+                 elif (link[0] == "/"): link = "http://" + url.replace("http://","").replace("https://","") + link
+                 else: continue 
+             else: continue
+         
+             #prints what is returned from the page
+             try:
                  if (statusCodeHandler(requests.head(link).status_code) != 1):
                      print(link + ' returns ' + str(requests.head(link).status_code) + statusCodeHandler(requests.head(link).status_code) + "\n")
+                     brokenCounter+=1
                  else: 
                      print(link + ' returns ' + str(requests.head(link).status_code) + "\n")
              except (requests.ConnectionError, requests.exceptions.InvalidURL) as e: #unable to connect to link
                  print("Failed to connect to " + link + "\n")
+                 failedCounter+=1
     
     else: print("No anchor tags found!") #no anchor tags found on the page
-    print(str(len(anchors)) + " anchor tags found")
+    print(str(len(anchors)) + " anchor tags found, " + str(brokenCounter) + " broken links found, failed to connect to " + str(failedCounter))
     print("Link Check Complete!")
 
-def testElements(url):
+def testElements(markup,url):
+    missingAtt = 0
     print("What element do you wanna test") 
     element = input().lower().replace("<","").replace(">","")
-    elements = grabElements(url,element)
+    elements = grabElements(markup,element)
     if (elements != None):
         print("What attribute do you wanna check for? (enter none to just search for elements)")
         attribute = input().lower()
@@ -76,9 +87,10 @@ def testElements(url):
                 if (attribute == "none"):
                     print("Element found " + str(element))
                 else:
+                    if (element.get(attribute) != None): missingAtt += 1
                     print("Attribute found for " + str(element) + "\n" if (element.get(attribute) != None) else 
                           "No " + attribute + " found for " + str(element) + "\n")
-        print(str(len(elements)) + " elements found")
+        print(str(len(elements)) + " found, " + str(missingAtt) + " missing attribute, if provided")
     else:
         print("No elements of type " + element + " found")
         
@@ -118,7 +130,7 @@ def main():
                         print("Bye bye for now!")
                         break;
                     #calls function returned
-                    job(html.text)
+                    job(html.text,url)
                 #invalid input
                 else:
                     print("Not a valid function! Try again! \n")
