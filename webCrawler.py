@@ -5,7 +5,11 @@
 from bs4 import BeautifulSoup 
 import requests
 import time
-logName = time.strftime("%Y%m%d-%H%M%S") + ".txt"
+import urllib3
+import os
+if not os.path.exists("./logs"):
+    os.makedirs("./logs")
+logName = "./logs/" + time.strftime("%Y%m%d-%H%M%S") + ".txt"
 logFile = open(logName,"w")
 #pseudo switch statements
 #work around for switch statements used to return header codes
@@ -159,7 +163,8 @@ def main():
                         logFile.write("Quit\n")
                         break;
                     #calls function returned
-                    job(html.text,url)
+                    domain = urllib3.util.url.parse_url(url)
+                    job(html.text,domain.host)
                 #invalid input
                 else:
                     logFile.write("Not a valid function! Try again!\n")
