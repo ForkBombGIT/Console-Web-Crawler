@@ -13,7 +13,16 @@ A console web page crawler with a variety of useful functions, such as link and 
 ## Getting Started
 
 ## Code Structure
+```
+.
+├── README.md
+├── webCrawler.py
 
+```
 ## Tech
+- [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 
 ## Contributors
+- Eros Di Pede
+  + [github](https://github.com/ForkBombGIT)
+  + [website](https://erosdipede.me/)
